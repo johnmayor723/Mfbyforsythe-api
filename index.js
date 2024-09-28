@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require("./routes/auth")
+const productRoutes = require('./routes/productRoutes');
 const connectDB = require("./config/database")
 
 const PORT = process.env.PORT || 3000;  // Use the port assigned by Render or default to 3000
@@ -18,6 +19,7 @@ connectDB()
 
 // 
 app.use("/api/auth", authRoutes)
+app.use("/api/products", productRoutes)
 
 
 // Root route

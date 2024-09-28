@@ -20,20 +20,22 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, role} = req.body;
 
     try {
       let user = await User.findOne({ email });
       if (user) {
         return res.status(400).json({ msg: 'User already exists' });
       }
-
+       
+       // Create new user object
       user = new User({
         name,
         email,
         password,
+        role: role && role === 'admin' ? 'admin' : 'user' // Conditional role assignment
       });
-
+      
       await user.save();
 
       const payload = {
