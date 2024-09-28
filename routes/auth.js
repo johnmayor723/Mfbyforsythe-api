@@ -42,7 +42,7 @@ router.post(
         },
       };
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign(payload, "dfgghhyy65443322edfhhhjj", { expiresIn: '1h' });
       res.status(201).json({ token });
     } catch (err) {
       console.error(err.message);
