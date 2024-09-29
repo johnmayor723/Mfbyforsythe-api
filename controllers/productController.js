@@ -4,8 +4,9 @@ const Product = require('../models/Product');
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, category, price, stock, imageUrl } = req.body;
+    res.send(req.body)
 
-    const newProduct = new Product({
+   /* const newProduct = new Product({
       name,
       description,
       category,
@@ -15,7 +16,7 @@ exports.createProduct = async (req, res) => {
     });
 
     const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
+    res.status(201).json(savedProduct);*/
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
