@@ -4,7 +4,7 @@ const productController = require('../controllers/productController');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
 // Create a new product (Admin only)
-router.post('/', adminMiddleware, productController.createProduct);
+router.post('/', productController.createProduct);
 
 // Get all products (Public)
 router.get('/', productController.getAllProducts);
