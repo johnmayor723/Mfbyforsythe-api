@@ -13,7 +13,7 @@ const { admin } = require('../middleware/adminMiddleware');
 router.post('/', createOrder);
 
 // Route to get user's orders
-router.get('/myorders, getMyOrders);
+router.get('/myorders', getMyOrders);
 
 // Admin routes
 router.get('/',  getAllOrders);
