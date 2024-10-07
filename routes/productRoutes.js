@@ -13,9 +13,9 @@ router.get('/', productController.getAllProducts);
 router.get('/:id', productController.getProductById);
 
 // Update a product (Admin only)
-router.put('/:id', adminMiddleware, productController.updateProduct);
+router.put('/:id', productController.updateProduct);
 
 // Delete a product (Admin only)
-router.delete('/:id', adminMiddleware, productController.deleteProduct);
+router.delete('/:id', productController.deleteProduct);
 
 module.exports = router;
