@@ -94,7 +94,15 @@ router.post(
       };
 
       const token = jwt.sign(payload, "dfgghhyy65443322edfhhhjj", { expiresIn: '1h' });
-      res.json({ token });
+      res.json({ 
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
