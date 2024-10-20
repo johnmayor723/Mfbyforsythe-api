@@ -1,72 +1,78 @@
-const Cart = require('../models/Cart');
+// controllers/cartController.js
 
+const Cart = require('../models/cart');
+const Product = require('../models/product');
 
-const addToCart = async (req, res) => {
-    const { product, qty, name, image, price } = req.body;
-
-    const cart = await Cart.findOne({ user: req.user._id });
-
-    if (cart) {
-        // Update cart items if cart exists
-        const productExists = cart.cartItems.find(item => item.product.toString() === product);
-
-        if (productExists) {
-            productExists.qty += qty;
-        } else {
-            cart.cartItems.push({ product, qty, name, image, price });
-        }
-
-        await cart.save();
-        return res.json(cart);
-    } else {
-        // Create new cart
-        const newCart = new Cart({
-            user: req.user._id,
-            cartItems: [{ product, qty, name, image, price }]
-        });
-
-        await newCart.save();
-        res.status(201).json(newCart);
+// Get Cart
+const getCart = async (req, res, next) => {
+  try {
+    if (!req.session.cart) {
+      return res.status(200).json({ products: null, totalPrice: 0 });
     }
+
+    const cart = new Cart(req.session.cart.items);
+    res.status(200).json({
+      products: cart.generateArray(),
+      totalPrice: cart.totalPrice,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while fetching the cart', error });
+  }
 };
 
-// @desc Get user's cart
-// @route GET /api/cart
-// @access Private
-const getCart = async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user._id });
-    res.json(cart);
-};
+// Add to Cart
+const addToCart = async (req, res, next) => {
+  const productId = req.params.id;
+  const cart = new Cart(req.session.cart ? req.session.cart.items : {});
 
-// @desc Remove product from cart
-// @route DELETE /api/cart/:id
-// @access Private
-const removeFromCart = async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user._id });
-
-    if (cart) {
-        cart.cartItems = cart.cartItems.filter(item => item.product.toString() !== req.params.id);
-        await cart.save();
-        return res.json(cart);
-    } else {
-        res.status(404).json({ message: 'Cart not found' });
+  try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
     }
+    cart.add(product, product.id);
+    req.session.cart = cart;
+    res.status(200).json({ message: 'Product added to cart', cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while adding to cart', error });
+  }
 };
 
-// @desc Clear cart after order
-// @route DELETE /api/cart
-// @access Private
-const clearCart = async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user._id });
+// Remove from Cart
+const removeFromCart = async (req, res, next) => {
+  const productId = req.params.id;
+  const cart = new Cart(req.session.cart ? req.session.cart.items : {});
 
-    if (cart) {
-        cart.cartItems = [];
-        await cart.save();
-        return res.json({ message: 'Cart cleared' });
-    } else {
-        res.status(404).json({ message: 'Cart not found' });
+  try {
+    if (!cart.items[productId]) {
+      return res.status(404).json({ message: 'Product not found in cart' });
     }
+
+    cart.remove(productId);
+    req.session.cart = cart;
+    res.status(200).json({ message: 'Product removed from cart', cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while removing from cart', error });
+  }
 };
+
+// Clear Cart
+const
+    clearCart = async (req, res, next) => {
+  try {
+    req.session.cart = null; // Clear the cart by setting it to null
+    res.status(200).json({ message: 'Cart cleared' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while clearing the cart', error });
+  }
+};
+
+// Exporting all functions
+
 
 module.exports = {
     addToCart,
