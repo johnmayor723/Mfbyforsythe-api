@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override')
 const MongoStore = require('connect-mongo')
+const session = require('express-session')
 
 const authRoutes = require("./routes/auth")
 const productRoutes = require('./routes/productRoutes');
