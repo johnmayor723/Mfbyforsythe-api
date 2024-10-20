@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override')
+const MongoStore = require('connect-mongo')
 
 const authRoutes = require("./routes/auth")
 const productRoutes = require('./routes/productRoutes');
@@ -15,14 +17,22 @@ const cartRoutes = require('./routes/cartRoutes');
 const connectDB = require("./config/database")
 
 const PORT = process.env.PORT || 3000;  // Use the port assigned by Render or default to 3000
+// Connect to MongoDB
+connectDB()
 
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(session({
+  secret: 'mysupersecret',
+  resave: false,
+  saveUninitialized: false,
+  
+  store: MongoStore.create({ mongoUrl: DBURL })
+}));
+app.use(methodOverride('_method'))
 
-// Connect to MongoDB
-connectDB()
 
 // 
 app.use("/api/auth", authRoutes)
