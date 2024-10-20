@@ -17,7 +17,7 @@ const {
 const cartController = require('../controllers/cartController');
 
 router.get('/', cartController.getCart);
-router.post('/', cartController.addToCart);
+router.post('/:id', cartController.addToCart);
 router.delete('/:id', cartController.removeFromCart);
 router.delete('/', cartController.clearCart);
 
