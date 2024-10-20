@@ -1,8 +1,6 @@
 const Cart = require('../models/Cart');
 
-// @desc Add product to cart
-// @route POST /api/cart
-// @access Private
+
 const addToCart = async (req, res) => {
     const { product, qty, name, image, price } = req.body;
 
