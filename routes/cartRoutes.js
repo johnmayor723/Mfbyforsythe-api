@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
+//const { protect } = require('../middleware/authMiddleware');
 const {
     addToCart,
     getCart,
@@ -8,9 +8,24 @@ const {
     clearCart
 } = require('../controllers/cartController');
 
-router.post('/',  addToCart);
+
+// routes/cart.js
+
+const express = require('express');
+const router = express.Router();
+const cartController = require('../controllers/cartController');
+
+router.get('/', cartController.getCart);
+router.post('/:id', cartController.addToCart);
+router.delete('/:id', cartController.removeFromCart);
+router.post('/', cartController.clearCart);
+
+module.exports = router;
+
+
+/*router.post('/',  addToCart);
 router.get('/',  getCart);
 router.delete('/:id',  removeFromCart);
 router.delete('/',  clearCart);
 
-module.exports = router;
+module.exports = router;*/
