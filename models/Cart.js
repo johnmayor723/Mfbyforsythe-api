@@ -30,4 +30,4 @@ module.exports = function Cart(initItems) {
         }
         return arr;
     };
-};cartSchema);
+};
