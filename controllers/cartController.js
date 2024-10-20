@@ -1,7 +1,26 @@
 // controllers/cartController.js
 
-const Cart = require('../models/cart');
-const Product = require('../models/product');
+const Cart = require('../models/Cart');
+const Product = require('../models/Product');
+
+function formatCart(cart) {
+  let formattedCart = 'Your cart contains:\n\n';
+  let totalAmount = 0;
+
+  cart.forEach(item => {
+    formattedCart += `Name: ${item.name}\n`;
+    formattedCart += `Price: $${item.price}\n`;
+    formattedCart += `Quantity: ${item.qty}\n`;
+    formattedCart += `-----------------\n`;
+    totalAmount += item.price * item.qty;
+  });
+
+  formattedCart += `Total Price: $${totalAmount.toFixed(2)}\n`;
+  return formattedCart;
+}
+
+
+
 
 // Get Cart
 const getCart = async (req, res, next) => {
