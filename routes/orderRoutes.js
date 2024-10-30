@@ -1,22 +1,21 @@
+// routes/orderRoutes.js
 const express = require('express');
 const router = express.Router();
-const {
-    createOrder,
-    getMyOrders,
-    getAllOrders,
-    updateOrderStatus
-} = require('../controllers/orderController');
-const { protect } = require('../middleware/authMiddleware');
-const { admin } = require('../middleware/adminMiddleware');
+const orderController = require('../controllers/orderController');
 
-// Route to create a new order
-router.post('/', createOrder);
+// Route to create a Paystack session
+router.post('/create-paystack-session', orderController.createPaystackSession);
 
-// Route to get user's orders
-router.get('/myorders', getMyOrders);
+// Route to create an order after successful payment
+router.post('/api/orders', orderController.createOrder);
 
-// Admin routes
-router.get('/',  getAllOrders);
-router.put('/:id/status',  updateOrderStatus);
+// Route to get all orders
+router.get('/api/orders', orderController.getAllOrders);
+
+// Route to update order status
+router.put('/api/orders/:orderId', orderController.updateOrderStatus);
+
+// Route to track an order by unique ID
+router.get('/api/orders/track/:uniqueId', orderController.trackOrder);
 
 module.exports = router;
