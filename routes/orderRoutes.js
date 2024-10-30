@@ -7,15 +7,15 @@ const orderController = require('../controllers/orderController');
 router.post('/create-paystack-session', orderController.createPaystackSession);
 
 // Route to create an order after successful payment
-router.post('/api/orders', orderController.createOrder);
+router.post('/', orderController.createOrder);
 
 // Route to get all orders
-router.get('/api/orders', orderController.getAllOrders);
+router.get('/', orderController.getAllOrders);
 
 // Route to update order status
-router.put('/api/orders/:orderId', orderController.updateOrderStatus);
+router.put('/:orderId', orderController.updateOrderStatus);
 
 // Route to track an order by unique ID
-router.get('/api/orders/track/:uniqueId', orderController.trackOrder);
+router.get('/:uniqueId', orderController.trackOrder);
 
 module.exports = router;
