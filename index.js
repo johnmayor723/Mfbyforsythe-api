@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth")
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const categoryRoutes =require('./routes/categoryRoutes');
 
 
 
@@ -43,7 +44,8 @@ app.use(methodOverride('_method'))
 app.use("/api/auth", authRoutes)
 app.use("/api/products", productRoutes)
 app.use('/api/orders', orderRoutes);
-app.use('/api/carts', cartRoutes)
+app.use('/api/carts', cartRoutes);
+app.use('/api/categories', categoryRoutes);
 
 
 // Root route
