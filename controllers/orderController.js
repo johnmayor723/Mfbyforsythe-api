@@ -26,8 +26,60 @@ exports.createPaystackSession = async (req, res) => {
 
 // Function to create a new order after payment is completed
 exports.createOrder = async (req, res) => {
-  const { name, email, shippingAddress, paymentReference, totalAmount } = req.body;
+  const { name, email, shippingAddress, paymentReference, totalAmount, cart } = req.body;
+// Function to generate order email HTML content
+const generateOrderEmailHTML = (cartItems, orderDetails, isAdmin = false) => {
+    const itemsRows = cartItems.map(item => `
+        <tr style="border: 1px solid gray;">
+            <td style="padding: 10px; text-align: center;"><img src="${item.imageUrl}" alt="${item.name}" width="50"></td>
+            <td style="padding: 10px; text-align: center;">${item.name}</td>
+            <td style="padding: 10px; text-align: center;">${item.quantity}</td>
+            <td style="padding: 10px; text-align: center;">₦${item.price}</td>
+        </tr>
+    `).join('');
 
+    return `
+        <div style="text-align: center; padding: 20px;">
+            <h1><img src="https://firebasestorage.googleapis.com/v0/b/fooddeck-fc840.appspot.com/o/Logo-removebg-preview%20(3).png?alt=media&token=e3635a63-8ba2-40c8-a3fc-1d068979c172" alt="Company Logo" width="100"></h1>
+        </div>
+        <div style="padding: 20px;">
+            <h3>${isAdmin ? 'New Order Notification' : 'Order Confirmation'}</h3>
+            <p>Order Details:</p>
+            
+            <div style="margin:20px 0;color:#FE9801;font-size:15px; font-style:italic">
+                <p>
+                    ${isAdmin 
+                        ? 'A new order was made. Please review the order details below:' 
+                        : `Hello ${orderDetails.name},<br>
+                           Thank you for placing an order! Your order has been successfully placed. You can review your order details below. Our sales agent will contact you soon for confirmation.`
+                    }
+                </p>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border: 1px solid gray;">
+                        <th style="padding: 10px; text-align: center;">Image</th>
+                        <th style="padding: 10px; text-align: center;">Name</th>
+                        <th style="padding: 10px; text-align: center;">Quantity</th>
+                        <th style="padding: 10px; text-align: center;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsRows}
+                </tbody>
+            </table>
+            <p><strong>Total Quantity:</strong> ${orderDetails.totalQty}</p>
+            <p><strong>Total Amount:</strong> ₦${orderDetails.totalAmount}</p>
+            <p><strong>Order Notes:</strong> ${orderDetails.ordernotes}</p>
+        </div>
+        <div style="text-align: center; padding: 20px; border-top: 1px solid gray;">
+            <p>Contact us: info@fooddeck.com | Website: www.fooddeck.com.ng</p>
+        </div>
+    `;
+};
+
+//_____<<<<<<<<<<>>>>>>>>>>>>>>_____\\
   const newOrder = new Order({
     name,
     email,
@@ -42,69 +94,32 @@ exports.createOrder = async (req, res) => {
     const savedOrder = await newOrder.save();
 
     // Send confirmation email with order details
-    const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'fooddeck3@gmail.com',
         pass: 'xyca sbvx hifi amzs'  // Replace with actual password
     },
     });
-
-    const mailOptions = {
-      from: '"FoodDeck" <fooddeck3@gmail.com>', 
-      to: email,
-      subject: 'Order Confirmation',
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
-          <div style="text-align: center; padding: 10px 0;">
-            <img src="https://placeholder-image-url.com/logo.png" alt="Company Logo" style="width: 150px;">
-          </div>
-          <h2 style="text-align: center; color: #4CAF50;">Thank you for your order, ${name}!</h2>
-          <p style="text-align: center;">Your order has been successfully created and is currently being processed. Here are your order details:</p>
-          
-          <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
-            <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Order ID</th>
-              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${savedOrder.uniqueId}</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Shipping Address</th>
-              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${shippingAddress}</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Total Amount</th>
-              <td style="padding: 8px; border-bottom: 1px solid #ddd;">₦${totalAmount}</td>
-            </tr>
-            <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Status</th>
-              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${savedOrder.status}</td>
-            </tr>
-          </table>
-          
-          <p style="text-align: center; font-weight: bold; margin-top: 20px;">We appreciate your business!</p>
-
-          <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center; font-size: 12px; color: #666;">
-            <p>Contact us: <a href="mailto:support@fooddeck.com.ng">support@fooddeck.com.ng</a></p>
-            <p>Visit our website: <a href="https://companywebsite.com">www.companywebsite.com</a></p>
-            <p>&copy; ${new Date().getFullYear()} FoodDeck. All rights reserved.</p>
-          </div>
-        </div>
-      `,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('Order confirmation email sent:', info.response);
-      }
-    });
-
-    res.status(201).json(savedOrder);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create order.' });
-  }
+const userEmailOptions = {
+    from: '"FoodDeck" <fooddeck3@gmail.com>', // Display name with email in brackets
+    to: email,
+    subject: 'Order Confirmation - FoodDeck',
+    html: generateOrderEmailHTML(cart, orderPayload)
 };
+
+const adminEmailOptions = {
+    from: '"FoodDeck" <fooddeck3@gmail.com>',
+    to: 'fooddeck3@gmail.com',
+    subject: 'New Order Notification - FoodDeck',
+    html: generateOrderEmailHTML(cart, orderPayload, true)
+};
+
+    
+    
+// Send emails 
+await transporter.sendMail(userEmailOptions);
+await transporter.sendMail(adminEmailOptions);
 
 // Function to get all orders
 exports.getAllOrders = async (req, res) => {
