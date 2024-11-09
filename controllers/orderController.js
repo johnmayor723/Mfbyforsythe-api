@@ -7,13 +7,14 @@ const { v4: uuidv4 } = require('uuid');
 exports.createPaystackSession = async (req, res) => {
   const { email, amount } = req.body;
 
+  const key ="sk_test_d754fb2a648e8d822b09aa425d13fc62059ca08e"
   try {
     const response = await axios.post('https://api.paystack.co/transaction/initialize', {
       email,
       amount,
     }, {
       headers: {
-        Authorization: `Bearer YOUR_PAYSTACK_SECRET_KEY`,
+        Authorization: `Bearer ${key}',
       },
     });
 
@@ -44,13 +45,13 @@ exports.createOrder = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'your_email@gmail.com',
-        pass: 'your_email_password',
-      },
+        user: 'fooddeck3@gmail.com',
+        pass: 'xyca sbvx hifi amzs'  // Replace with actual password
+    },
     });
 
     const mailOptions = {
-      from: 'your_email@gmail.com',
+      from: '"FoodDeck" <fooddeck3@gmail.com>', 
       to: email,
       subject: 'Order Confirmation',
       html: `
@@ -83,9 +84,9 @@ exports.createOrder = async (req, res) => {
           <p style="text-align: center; font-weight: bold; margin-top: 20px;">We appreciate your business!</p>
 
           <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center; font-size: 12px; color: #666;">
-            <p>Contact us: <a href="mailto:support@company.com">support@company.com</a></p>
+            <p>Contact us: <a href="mailto:support@fooddeck.com.ng">support@fooddeck.com.ng</a></p>
             <p>Visit our website: <a href="https://companywebsite.com">www.companywebsite.com</a></p>
-            <p>&copy; ${new Date().getFullYear()} Company Name. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} FoodDeck. All rights reserved.</p>
           </div>
         </div>
       `,
