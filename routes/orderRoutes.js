@@ -4,7 +4,7 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 
 // Route to create a Paystack session
-router.post('/create-paystack-session', orderController.createPaystackSession);
+router.post('/initialize, orderController.createPaystackSession);
 
 // Route to create an order after successful payment
 router.post('/', orderController.createOrder);
