@@ -1,31 +1,21 @@
-const Order = require('../models/Order');
-const axios = require('axios');
+const path = require('path');
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-
-//email template
-const loadEmailTemplate = (filePath, replacements) => {
-    let template = fs.readFileSync(filePath, 'utf8');
-    for (const [key, value] of Object.entries(replacements)) {
-        template = template.replace(new RegExp(`{{${key}}}`, 'g'), value);
-    }
-    return template;
-};
-
+const axios = require('axios');
+const Order = require('../models/Order'); // Adjust path to your Order model
 
 // Function to create a new Paystack session
 exports.createPaystackSession = async (req, res) => {
   const { email, amount } = req.body;
+  const key = "sk_test_d754fb2a648e8d822b09aa425d13fc62059ca08e";
 
-  const key ="sk_test_d754fb2a648e8d822b09aa425d13fc62059ca08e"
   try {
     const response = await axios.post('https://api.paystack.co/transaction/initialize', {
       email,
       amount,
     }, {
       headers: {
-        Authorization: `Bearer ${key}',
+        Authorization: `Bearer ${key}`,
       },
     });
 
@@ -35,6 +25,7 @@ exports.createPaystackSession = async (req, res) => {
   }
 };
 
+// Function to create an order and send confirmation emails in plain text
 exports.createOrder = async (req, res) => {
     const { name, email, shippingAddress, paymentReference, totalAmount, cart } = req.body;
 
@@ -51,28 +42,50 @@ exports.createOrder = async (req, res) => {
     try {
         const savedOrder = await newOrder.save();
 
-        const orderPayload = {
-            emailTitle: 'Order Confirmation - FoodDeck',
-            greetingMessage: `Hello ${name},<br>Thank you for placing an order!`,
-            totalQty: cart.reduce((acc, item) => acc + item.quantity, 0),
-            totalAmount,
-            orderNotes: 'Please ensure timely delivery',
-            itemsRows: cart.map(item => `
-                <tr>
-                    <td><img src="${item.imageUrl}" alt="${item.name}" width="50"></td>
-                    <td>${item.name}</td>
-                    <td>${item.quantity}</td>
-                    <td>₦${item.price}</td>
-                </tr>
-            `).join('')
-        };
+        // Generate items list as a plain text string
+        const itemsList = cart.map(item => `- ${item.name} (Qty: ${item.quantity}) - ₦${item.price}`).join('\n');
 
-        const userEmailHTML = loadEmailTemplate(path.join(__dirname, 'templates', 'orderEmailTemplate.html'), orderPayload);
-        const adminEmailHTML = loadEmailTemplate(path.join(__dirname, 'templates', 'orderEmailTemplate.html'), {
-            ...orderPayload,
-            emailTitle: 'New Order Notification - FoodDeck',
-            greetingMessage: 'A new order was made. Please review the details below.'
-        });
+        // Prepare plain text email content
+        const userEmailText = `
+Order Confirmation - FoodDeck
+
+Hello ${name},
+
+Thank you for placing an order with FoodDeck! Here are your order details:
+
+Items:
+${itemsList}
+
+Total Quantity: ${cart.reduce((acc, item) => acc + item.quantity, 0)}
+Total Amount: ₦${totalAmount}
+
+Notes: Please ensure timely delivery.
+
+Thank you,
+FoodDeck Team
+        `;
+
+        const adminEmailText = `
+New Order Notification - FoodDeck
+
+A new order has been placed. Please review the details below:
+
+Customer: ${name}
+Email: ${email}
+
+Shipping Address: ${shippingAddress}
+
+Items:
+${itemsList}
+
+Total Quantity: ${cart.reduce((acc, item) => acc + item.quantity, 0)}
+Total Amount: ₦${totalAmount}
+
+Please process this order as soon as possible.
+
+Best,
+FoodDeck Team
+        `;
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -86,14 +99,14 @@ exports.createOrder = async (req, res) => {
             from: '"FoodDeck" <fooddeck3@gmail.com>',
             to: email,
             subject: 'Order Confirmation - FoodDeck',
-            html: userEmailHTML
+            text: userEmailText
         };
 
         const adminEmailOptions = {
             from: '"FoodDeck" <fooddeck3@gmail.com>',
             to: 'fooddeck3@gmail.com',
             subject: 'New Order Notification - FoodDeck',
-            html: adminEmailHTML
+            text: adminEmailText
         };
 
         await transporter.sendMail(userEmailOptions);
@@ -105,10 +118,7 @@ exports.createOrder = async (req, res) => {
     }
 };
 
-
- 
-
-// Function to get and update order status by ID
+// Function to update the order status by ID
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
