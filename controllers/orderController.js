@@ -1,13 +1,11 @@
-const path = require('path');
+const Order = require('../models/Order');
+const axios = require('axios');
 const nodemailer = require('nodemailer');
 const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
-const Order = require('../models/Order'); // Adjust path to your Order model
 
 // Function to create a new Paystack session
 exports.createPaystackSession = async (req, res) => {
   const { email, amount } = req.body;
-  const key = "sk_test_d754fb2a648e8d822b09aa425d13fc62059ca08e";
 
   try {
     const response = await axios.post('https://api.paystack.co/transaction/initialize', {
@@ -15,7 +13,7 @@ exports.createPaystackSession = async (req, res) => {
       amount,
     }, {
       headers: {
-        Authorization: `Bearer ${key}`,
+        Authorization: `Bearer YOUR_PAYSTACK_SECRET_KEY`,
       },
     });
 
@@ -25,100 +23,99 @@ exports.createPaystackSession = async (req, res) => {
   }
 };
 
-// Function to create an order and send confirmation emails in plain text
+// Function to create a new order after payment is completed
 exports.createOrder = async (req, res) => {
-    const { name, email, shippingAddress, paymentReference, totalAmount, cart } = req.body;
+  const { name, email, shippingAddress, paymentReference, totalAmount } = req.body;
 
-    const newOrder = new Order({
-        name,
-        email,
-        shippingAddress,
-        totalAmount,
-        paymentReference,
-        status: 'processing',
-        uniqueId: uuidv4(),
+  const newOrder = new Order({
+    name,
+    email,
+    shippingAddress,
+    totalAmount,
+    paymentReference,
+    status: 'processing',
+    uniqueId: uuidv4(),
+  });
+
+  try {
+    const savedOrder = await newOrder.save();
+
+    // Send confirmation email with order details
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'your_email@gmail.com',
+        pass: 'your_email_password',
+      },
     });
 
-    try {
-        const savedOrder = await newOrder.save();
+    const mailOptions = {
+      from: 'your_email@gmail.com',
+      to: email,
+      subject: 'Order Confirmation',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
+          <div style="text-align: center; padding: 10px 0;">
+            <img src="https://placeholder-image-url.com/logo.png" alt="Company Logo" style="width: 150px;">
+          </div>
+          <h2 style="text-align: center; color: #4CAF50;">Thank you for your order, ${name}!</h2>
+          <p style="text-align: center;">Your order has been successfully created and is currently being processed. Here are your order details:</p>
+          
+          <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Order ID</th>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${savedOrder.uniqueId}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Shipping Address</th>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${shippingAddress}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Total Amount</th>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">₦${totalAmount}</td>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Status</th>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${savedOrder.status}</td>
+            </tr>
+          </table>
+          
+          <p style="text-align: center; font-weight: bold; margin-top: 20px;">We appreciate your business!</p>
 
-        // Generate items list as a plain text string
-        const itemsList = cart.map(item => `- ${item.name} (Qty: ${item.quantity}) - ₦${item.price}`).join('\n');
+          <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center; font-size: 12px; color: #666;">
+            <p>Contact us: <a href="mailto:support@company.com">support@company.com</a></p>
+            <p>Visit our website: <a href="https://companywebsite.com">www.companywebsite.com</a></p>
+            <p>&copy; ${new Date().getFullYear()} Company Name. All rights reserved.</p>
+          </div>
+        </div>
+      `,
+    };
 
-        // Prepare plain text email content
-        const userEmailText = `
-Order Confirmation - FoodDeck
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('Order confirmation email sent:', info.response);
+      }
+    });
 
-Hello ${name},
-
-Thank you for placing an order with FoodDeck! Here are your order details:
-
-Items:
-${itemsList}
-
-Total Quantity: ${cart.reduce((acc, item) => acc + item.quantity, 0)}
-Total Amount: ₦${totalAmount}
-
-Notes: Please ensure timely delivery.
-
-Thank you,
-FoodDeck Team
-        `;
-
-        const adminEmailText = `
-New Order Notification - FoodDeck
-
-A new order has been placed. Please review the details below:
-
-Customer: ${name}
-Email: ${email}
-
-Shipping Address: ${shippingAddress}
-
-Items:
-${itemsList}
-
-Total Quantity: ${cart.reduce((acc, item) => acc + item.quantity, 0)}
-Total Amount: ₦${totalAmount}
-
-Please process this order as soon as possible.
-
-Best,
-FoodDeck Team
-        `;
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'fooddeck3@gmail.com',
-                pass: 'xyca sbvx hifi amzs'  // Replace with actual password
-            },
-        });
-
-        const userEmailOptions = {
-            from: '"FoodDeck" <fooddeck3@gmail.com>',
-            to: email,
-            subject: 'Order Confirmation - FoodDeck',
-            text: userEmailText
-        };
-
-        const adminEmailOptions = {
-            from: '"FoodDeck" <fooddeck3@gmail.com>',
-            to: 'fooddeck3@gmail.com',
-            subject: 'New Order Notification - FoodDeck',
-            text: adminEmailText
-        };
-
-        await transporter.sendMail(userEmailOptions);
-        await transporter.sendMail(adminEmailOptions);
-
-        res.status(201).json({ message: 'Order created and emails sent successfully.', order: savedOrder });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create order and send emails.' });
-    }
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create order.' });
+  }
 };
 
-// Function to update the order status by ID
+// Function to get all orders
+exports.getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve orders.' });
+  }
+};
+
+// Function to get and update order status by ID
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
