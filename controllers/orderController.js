@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 
 // Function to create a new Paystack session
 exports.createPaystackSession = async (req, res) => {
+  const key = "sk_test_d754fb2a648e8d822b09aa425d13fc62059ca08e";
   const { email, amount } = req.body;
 
   try {
@@ -13,7 +14,7 @@ exports.createPaystackSession = async (req, res) => {
       amount,
     }, {
       headers: {
-        Authorization: `Bearer YOUR_PAYSTACK_SECRET_KEY`,
+        Authorization: `Bearer ${key}`,
       },
     });
 
@@ -44,8 +45,8 @@ exports.createOrder = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'your_email@gmail.com',
-        pass: 'your_email_password',
+        user: 'fooddeck3@gmail.com',
+        pass: 'xyca sbvx hifi amzs',
       },
     });
 
