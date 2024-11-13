@@ -1,5 +1,28 @@
 const mongoose = require('mongoose');
 
+const measurementSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  imageUrl: {
+    type: String,
+    required: true
+  },
+  unit: {
+    type: String,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: false // Optional field
+  }
+});
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,7 +47,8 @@ const productSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true
-  }
+  },
+  measurements: [measurementSchema] // Embedding the measurements schema as an array
 }, {
   timestamps: true
 });
