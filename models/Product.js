@@ -16,11 +16,8 @@ const measurementSchema = new mongoose.Schema({
   unit: {
     type: String,
     required: true
-  },
-  quantity: {
-    type: Number,
-    required: false // Optional field
   }
+  
 });
 
 const productSchema = new mongoose.Schema({
