@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
 const measurementSchema = new mongoose.Schema({
-  id: {
-    type: String, // Use a string for the unique ID instead of MongoDB's default _id
-    required: true
-  },
+  
   name: {
     type: String,
     required: true
@@ -16,11 +13,8 @@ const measurementSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true
-  },
-  unit: {
-    type: String,
-    required: false
   }
+  
   
 });
 
