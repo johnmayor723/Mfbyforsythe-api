@@ -3,7 +3,7 @@ const Product = require('../models/Product');
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, category, price, stock, imageUrl } = req.body;
+    const { name, description, color, price, size, imageUrl } = req.body;
 
     // Parse measurements if it's a JSON string
     let measurements = [];
@@ -16,9 +16,9 @@ exports.createProduct = async (req, res) => {
     const newProduct = new Product({
       name,
       description,
-      category,
+      color,
       price,
-      stock,
+      size,
       imageUrl,
       measurements // Parsed measurements
     });
@@ -56,7 +56,7 @@ exports.getProductById = async (req, res) => {
 // Update product
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, category, price, stock, imageUrl } = req.body;
+    const { name, description, color, price, size, imageUrl } = req.body;
 
     // Parse measurements if it's a JSON string
     let measurements = [];
@@ -71,9 +71,9 @@ exports.updateProduct = async (req, res) => {
       {
         name,
         description,
-        category,
+        color,
         price,
-        stock,
+        size,
         imageUrl,
         measurements // Parsed measurements
       },

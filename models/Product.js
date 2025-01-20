@@ -6,10 +6,7 @@ const measurementSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  price: {
-    type: Number,
-    required: true
-  },
+  
   imageUrl: {
     type: String,
     required: true
@@ -27,15 +24,15 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  category: {
-    type: String,
+  size: {
+    type: Number,
     required: true
   },
   price: {
     type: Number,
     required: true
   },
-  stock: {
+  color: {
     type: Number,
     required: true
   },
