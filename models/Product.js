@@ -1,20 +1,5 @@
 const mongoose = require('mongoose');
 
-const measurementSchema = new mongoose.Schema({
-  
-  name: {
-    type: String,
-    required: true
-  },
-  
-  imageUrl: {
-    type: String,
-    required: true
-  }
-  
-  
-});
-
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,25 +10,22 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   size: {
-    type: Number,
+    type: String, // Changed from Number to String (since fashion sizes vary)
     required: true
   },
   price: {
     type: Number,
     required: true
   },
-  color: {
-    type: Number,
+  colors: {
+    type: [String], // Array of color options
     required: true
   },
-  imageUrl: {
-    type: String,
+  images: {
+    type: [String], // Array of image URLs
     required: true
-  },
-  measurements: [measurementSchema] // Embedding the measurements schema as an array
-}, {
-  timestamps: true
-});
+  }
+}, { timestamps: true });
 
 const Product = mongoose.model('Product', productSchema);
 
