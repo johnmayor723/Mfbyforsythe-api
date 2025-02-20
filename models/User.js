@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const addressSchema = new mongoose.Schema({
+  flatNumber: String, // Optional
+  street: String, // Optional
+  city: String, // Optional
+  postCode: {
+    type: String,
+    match: [/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/, 'Please enter a valid UK postcode'],
+  }, // Optional but validated
+  country: {
+    type: String,
+    default: 'United Kingdom',
+  }, // Optional, defaults to UK
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -15,10 +29,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
+  addresses: {
+    type: [addressSchema], // Optional array of addresses
+    default: [],
   },
   createdAt: {
     type: Date,
