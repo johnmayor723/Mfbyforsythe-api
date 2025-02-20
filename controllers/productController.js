@@ -3,24 +3,19 @@ const Product = require('../models/Product');
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, color, price, size, imageUrl } = req.body;
+    const { name, description, price, size, images, colors } = req.body;
 
-    // Parse measurements if it's a JSON string
-    let measurements = [];
-    if (req.body.measurements) {
-      measurements = typeof req.body.measurements === 'string'
-        ? JSON.parse(req.body.measurements)
-        : req.body.measurements;
-    }
+    // Parse images and colors if they are JSON strings
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
 
     const newProduct = new Product({
       name,
       description,
-      color,
       price,
       size,
-      imageUrl,
-      measurements // Parsed measurements
+      images: parsedImages, // Array of image URLs
+      colors: parsedColors  // Array of color options
     });
 
     const savedProduct = await newProduct.save();
@@ -56,26 +51,21 @@ exports.getProductById = async (req, res) => {
 // Update product
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, color, price, size, imageUrl } = req.body;
+    const { name, description, price, size, images, colors } = req.body;
 
-    // Parse measurements if it's a JSON string
-    let measurements = [];
-    if (req.body.measurements) {
-      measurements = typeof req.body.measurements === 'string'
-        ? JSON.parse(req.body.measurements)
-        : req.body.measurements;
-    }
+    // Parse images and colors if they are JSON strings
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
         name,
         description,
-        color,
         price,
         size,
-        imageUrl,
-        measurements // Parsed measurements
+        images: parsedImages,
+        colors: parsedColors
       },
       { new: true }
     );
@@ -88,6 +78,7 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 // Delete product
 exports.deleteProduct = async (req, res) => {
   try {
