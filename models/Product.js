@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   size: {
-    type: String, // Changed from Number to String (since fashion sizes vary)
+    type: [String], // Changed from Number to String (since fashion sizes vary)
     required: true
   },
   price: {
