@@ -11,7 +11,7 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const categoryRoutes =require('./routes/categoryRoutes');
-const blogRoutes =require('./routes/blogRoutes');
+const blogRoutes =require('./routes/blogRoute');
 
 
 
