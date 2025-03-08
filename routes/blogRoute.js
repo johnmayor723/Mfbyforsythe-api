@@ -14,14 +14,14 @@ router.get('/', async (req, res) => {
 
 // POST: Create new blog
 router.post('/', async (req, res) => {
-    const { title, image, content } = req.body;
+    const { title, image, content, author } = req.body;
 
     if (!title || !image || !content) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     try {
-        const blog = await Blog.create({ title, image, content });
+        const blog = await Blog.create({ title, image, content, author });
         res.json({ success: true, message: 'Blog created successfully', blog });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error creating blog' });
