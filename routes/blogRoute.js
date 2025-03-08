@@ -27,7 +27,18 @@ router.post('/', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error creating blog' });
     }
 });
-
+// GET: Fetch a single blog
+router.get('/:id', async (req, res) => {
+    try {
+        const blog = await Blog.findById(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ success: false, message: 'Blog not found' });
+        }
+        res.json({ success: true, blog });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error fetching blog' });
+    }
+});
 // PUT: Update a blog
 router.put('/update/:id', async (req, res) => {
     const { title, image, content } = req.body;
