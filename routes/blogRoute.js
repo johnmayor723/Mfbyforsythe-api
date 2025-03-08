@@ -58,13 +58,18 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
     try {
         const blog = await Blog.findByIdAndDelete(req.params.id);
+        
         if (!blog) {
             return res.status(404).json({ success: false, message: 'Blog not found' });
         }
+
         res.json({ success: true, message: 'Blog deleted successfully' });
+
     } catch (error) {
+        console.error('Error deleting blog:', error);
         res.status(500).json({ success: false, message: 'Error deleting blog' });
     }
 });
 
+//module.exports = router;
 module.exports = router;
