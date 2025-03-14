@@ -14,14 +14,14 @@ router.get('/', async (req, res) => {
 
 // POST: Create new blog
 router.post('/', async (req, res) => {
-    const { title, image, content, author } = req.body;
+    const { title, image, intro, para1, para2, para3, para4, author } = req.body;
 
-    if (!title || !image || !content) {
+    if (!title || !image || !intro || para1 || para2 || para3 || para4 ) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     try {
-        const blog = await Blog.create({ title, image, content, author });
+        const blog = await Blog.create({ title, image, intro, para1, para2, para3, para4, author });
         res.json({ success: true, message: 'Blog created successfully', blog });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error creating blog' });
@@ -41,10 +41,9 @@ router.get('/:id', async (req, res) => {
 });
 // PUT: Update a blog
 router.put('/update/:id', async (req, res) => {
-    const { title, image, content } = req.body;
-
+    const { title, image, intro, para1, para2, para3, para4, author } = req.body;
     try {
-        const blog = await Blog.findByIdAndUpdate(req.params.id, { title, image, content }, { new: true });
+        const blog = await Blog.findByIdAndUpdate(req.params.id, { title, image, intro, para1, para2, para3, para4, author}, { new: true });
         if (!blog) {
             return res.status(404).json({ success: false, message: 'Blog not found' });
         }
