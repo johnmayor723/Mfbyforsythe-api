@@ -52,7 +52,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/carts', cartRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/blogs', blogRoutes);
-.use('/api/comments', commentRoutes);
+app.use('/api/comments', commentRoutes);
 
 
 // Root route
