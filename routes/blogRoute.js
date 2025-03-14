@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { title, image, intro, para1, para2, para3, para4, author } = req.body;
 
-    if (!title || !image || !intro || para1 || para2 || para3 || para4 ) {
+    if (!title || !image || !intro || !para1 || !para2 || !para3 || !para4 ) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
