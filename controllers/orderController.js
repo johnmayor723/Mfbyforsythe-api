@@ -26,14 +26,14 @@ exports.createPaystackSession = async (req, res) => {
 
 // Function to create a new order after payment is completed
 exports.createOrder = async (req, res) => {
-  const { name, email, shippingAddress, paymentReference, totalAmount } = req.body;
+  const { name, email, shippingAddress, totalAmount } = req.body;
 
   const newOrder = new Order({
     name,
     email,
     shippingAddress,
     totalAmount,
-    paymentReference,
+   
     status: 'processing',
     uniqueId: uuidv4(),
   });
