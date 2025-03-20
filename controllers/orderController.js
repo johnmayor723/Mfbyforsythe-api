@@ -131,14 +131,32 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+// delete ordeer
+
+exports.deleteOrder = async (req, res) => {
+  try {
+    console.log("Deleting order with ID:", req.params.orderId);
+
+    const order = await Order.findByIdAndDelete(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found.' });
+    }
+
+    res.json({ message: 'Order deleted successfully.' });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    res.status(500).json({ error: 'Failed to delete the order.' });
+  }
+};
+
 // Function to get and update order status by ID
 exports.updateOrderStatus = async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ['shipped', 'delivered', 'cancelled'];
+  const validStatuses = ['shipped', 'delivered', 'processing'];
   if (!validStatuses.includes(status)) {
-    return res.status(400).json({ error: 'Invalid status. Allowed values are shipped, delivered, or cancelled.' });
+    return res.status(400).json({ error: 'Invalid status. Allowed values are shipped, delivered, or processing.' });
   }
 
   try {

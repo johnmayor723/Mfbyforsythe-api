@@ -17,6 +17,10 @@ router.get('/:orderId', orderController.getOrderById);
 
 // Route to update order status
 router.put('/:orderId', orderController.updateOrderStatus);
+// Route to delete order status
+router.delete('/:orderId', orderController.deleteOrder);
+
+
 
 // Route to track an order by unique ID
 router.get('/:uniqueId', orderController.trackOrder);
