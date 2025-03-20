@@ -10,7 +10,10 @@ router.post('/initialize', orderController.createPaystackSession);
 router.post('/', orderController.createOrder);
 
 // Route to get all orders
-router.get('/', orderController.getAllOrders);
+router.get('/', orderController.getAllOrders
+//Route to get one order
+router.get('/:orderId', orderController.getOrderById);
+
 
 // Route to update order status
 router.put('/:orderId', orderController.updateOrderStatus);
