@@ -119,8 +119,8 @@ exports.getAllOrders = async (req, res) => {
 exports.getOrderById = async (req, res) => {
   try {
       console.log("reached this route")
-      console.log(req.params.id)
-    const order = await Order.findById(req.params.id);
+      console.log(req.params.orderId)
+    const order = await Order.findById(req.params.orderId);
     if (!order) {
       return res.status(404).json({ error: 'Order not found.' });
     }
