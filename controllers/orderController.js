@@ -118,12 +118,15 @@ exports.getAllOrders = async (req, res) => {
 
 exports.getOrderById = async (req, res) => {
   try {
+      console.log("reached this route")
+      console.log(req.params.id)
     const order = await Order.findById(req.params.id);
     if (!order) {
       return res.status(404).json({ error: 'Order not found.' });
     }
     res.json(order);
   } catch (error) {
+      console.log("error:", error)
     res.status(500).json({ error: 'Failed to retrieve the order.' });
   }
 };
