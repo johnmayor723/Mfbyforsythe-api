@@ -51,13 +51,13 @@ exports.createOrder = async (req, res) => {
     });
 
     const mailOptions = {
-      from: 'your_email@gmail.com',
+      from: 'support@marketspick.com',
       to: email,
       subject: 'Order Confirmation',
       html: `
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
           <div style="text-align: center; padding: 10px 0;">
-            <img src="https://placeholder-image-url.com/logo.png" alt="Company Logo" style="width: 150px;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/fooddeck-fc840.appspot.com/o/mfico.jpg?alt=media&token=eefddae4-e98f-46cf-a375-515d8688eb55" alt="Company Logo" style="width: 150px;">
           </div>
           <h2 style="text-align: center; color: #4CAF50;">Thank you for your order, ${name}!</h2>
           <p style="text-align: center;">Your order has been successfully created and is currently being processed. Here are your order details:</p>
