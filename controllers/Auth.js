@@ -8,6 +8,8 @@ const jwtSecret = "%^^__64sffyyyuuyrrrewe32e";
 // User Registration
 exports.register = async (req, res) => {
   try {
+      
+      console.log("here now")
     const { name, email, password } = req.body;
     const user = new User({ name, email, password });
 
@@ -15,6 +17,7 @@ exports.register = async (req, res) => {
     await user.save();
 
     const verificationUrl = `http://93.127.160.233:3060/api/auth/verify-email/${user.verificationToken}`;
+    console.log("sending mail")
     await sendEmail(user.email, "Verify Your Email", `Click here to verify: ${verificationUrl}`);
 
     const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "1h" });
@@ -84,7 +87,7 @@ exports.verifyEmail = async (req, res) => {
     user.verificationToken = undefined;
     await user.save();
 
-    res.json({ message: "Email verified successfully. You can now log in." });
+    res.redirect("https://mfbyforesythebrand.com/verified-email-login");
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
@@ -129,7 +132,7 @@ exports.resetPassword = async (req, res) => {
 
     await user.save();
 
-    res.redirect("http://93.127.160.233:3060/api/auth/success-password-reset");
+     res.redirect("https://mfbyforesythebrand.com/success-password-reset-login");
   } catch (error) {
     res.redirect("http://93.127.160.233:3060/api/auth/error-password-reset");
   }
