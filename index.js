@@ -6,7 +6,7 @@ const methodOverride = require('method-override')
 const MongoStore = require('connect-mongo')
 const session = require('express-session')
 
-const authRoutes = require("./routes/auth")
+const authRoutes = require("./routes/AuthRoutes")
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
