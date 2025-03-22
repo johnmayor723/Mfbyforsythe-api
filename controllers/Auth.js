@@ -62,16 +62,35 @@ exports.deleteAllUsers = async (req, res) => {
 
 // User Login
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ error: 'Invalid credentials' });
 
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
 
-  const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
-  res.json({ token });
+    const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
+
+    const userResponse = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber || '',
+      isVerified: user.isVerified || false,
+      createdAt: user.createdAt,
+    };
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: userResponse
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 exports.verifyEmail = async (req, res) => {
