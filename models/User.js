@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   phoneNumber:{
       type:String,
   },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
+  verificationToken: { type: String },
   addresses: {
     type: [addressSchema], // Optional array of addresses
     default: [],

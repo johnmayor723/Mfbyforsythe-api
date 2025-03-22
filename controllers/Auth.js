@@ -5,38 +5,27 @@ const jwt = require('jsonwebtoken');
 
 const jwtSecret = "%^^__64sffyyyuuyrrrewe32e";
 
-// User Registration
+// user registeration
 exports.register = async (req, res) => {
   try {
-      
-      console.log("here now")
+    console.log("Register function hit");
     const { name, email, password } = req.body;
-    const user = new User({ name, email, password });
+    
+    let user = new User({ name, email, password });
 
     user.verificationToken = crypto.randomBytes(32).toString("hex");
-    await user.save();
+    await user.save(); // Ensure token is saved
 
-    const verificationUrl = `http://93.127.160.233:3060/api/auth/verify-email/${user.verificationToken}`;
-    console.log("sending mail")
-    await sendEmail(user.email, "Verify Your Email", `Click here to verify: ${verificationUrl}`);
+    console.log("Saved user:", user);
+    console.log("Generated verification link:", `http://93.127.160.233:3060/api/auth/verify-email/${user.verificationToken}`);
 
-    const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: "1h" });
-
-    const userResponse = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      isVerified: user.isVerified,
-      createdAt: user.createdAt
-    };
+    await sendEmail(email, "Verify Your Email", `Click here to verify: http://93.127.160.233:3060/api/auth/verify-email/${user.verificationToken}`);
 
     res.json({
-      message: "Registration successful. Check your email for verification link.",
-      token,
-      user: userResponse
+      message: "Registration successful. Check your email for verification link."
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in register:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -75,13 +64,18 @@ exports.login = async (req, res) => {
   res.json({ token });
 };
 
-// Verify Email
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
-    const user = await User.findOne({ verificationToken: token });
+    console.log("Verifying token:", token);
 
-    if (!user) return res.status(400).json({ error: "Invalid or expired token" });
+    const user = await User.findOne({ verificationToken: token });
+    console.log("User found for token:", user);
+
+    if (!user) {
+      console.log("Invalid or expired token");
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -89,10 +83,10 @@ exports.verifyEmail = async (req, res) => {
 
     res.redirect("https://mfbyforesythebrand.com/verified-email-login");
   } catch (error) {
+    console.error("Error in verifyEmail:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
-
 // Request Password Reset
 exports.requestPasswordReset = async (req, res) => {
   try {
