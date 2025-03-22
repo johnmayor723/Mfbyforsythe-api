@@ -37,13 +37,13 @@ const sendEmail = async (to, subject, text) => {
     port: 465,
     secure: true,
     auth: {
-      user: "support@marketspick.com",
-      pass: "#@T1onal_Mayor",
+      user: "info@mfbyforesythebrand.com",
+      pass: "#@T1onal",
     },
   });
 
   await transporter.sendMail({
-    from: `"Market Picks" <support@marketspick.com>`,
+    from: `"mfbyforesythebrand" <info@mfbyforesythebrand.com>`,
     to,
     subject,
     text,
