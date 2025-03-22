@@ -8,6 +8,11 @@ router.post('/register', authController.register);
 // Login User
 router.post('/login', authController.login);
 
+//delete users
+// Register User
+router.delete('/', authController.deleteAllUsers);
+
+
 // Verify Email
 router.get('/verify-email/:token', authController.verifyEmail);
 

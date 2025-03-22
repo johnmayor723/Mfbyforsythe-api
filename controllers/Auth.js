@@ -49,6 +49,16 @@ const sendEmail = async (to, subject, text) => {
     text,
   });
 };
+// delete all users
+exports.deleteAllUsers = async (req, res) => {
+  try {
+    await User.deleteMany({}); // Deletes all users from the database
+    res.json({ message: "All users deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting all users:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // User Login
 exports.login = async (req, res) => {
