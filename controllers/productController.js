@@ -1,4 +1,91 @@
 const Product = require('../models/Product');
+const PreviewProduct = require('../models/PreviewProduct');
+
+// Create a preview product (staged version)
+exports.createPreviewProduct = async (req, res) => {
+  try {
+    const { name, description, price, size, images, colors } = req.body;
+
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+
+    const newPreview = new PreviewProduct({
+      name,
+      description,
+      price,
+      size,
+      images: parsedImages,
+      colors: parsedColors
+    });
+
+    const savedPreview = await newPreview.save();
+    res.status(201).json(savedPreview);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Get all preview (staged) products
+exports.getPreviewProducts = async (req, res) => {
+  try {
+    const previewProducts = await PreviewProduct.find().sort({ createdAt: -1 }); // optional: latest first
+    res.status(200).json(previewProducts);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch preview products', error: error.message });
+  }
+};
+
+
+// Publish all preview products to live product model
+exports.publishPreviewProducts = async (req, res) => {
+  try {
+    const previews = await PreviewProduct.find();
+
+    if (previews.length === 0) {
+      return res.status(400).json({ message: 'No products to publish.' });
+    }
+
+    const productsToSave = previews.map(preview => ({
+      name: preview.name,
+      description: preview.description,
+      price: preview.price,
+      size: preview.size,
+      colors: preview.colors,
+      images: preview.images
+    }));
+
+    await Product.insertMany(productsToSave);
+    await PreviewProduct.deleteMany();
+
+    res.status(200).json({ message: 'Products published successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Publishing failed', error: error.message });
+  }
+};
+
+
+
+// GET one draft product preview
+exports.getOneProductPreview = async (req, res) => {
+  try {
+    const product = await PreviewProduct.findOne({ _id: req.params.id, status: 'draft' });
+    if (!product) return res.status(404).json({ message: 'Product draft not found' });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching product preview', error: err.message });
+  }
+};
+
+// DELETE a product draft
+exports.deleteProductPreview = async (req, res) => {
+  try {
+    const product = await PreviewProduct.findOneAndDelete({ _id: req.params.id, status: 'draft' });
+    if (!product) return res.status(404).json({ message: 'Product draft not found' });
+    res.json({ message: 'Product draft deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting product preview', error: err.message });
+  }
+};
 
 // Create a new product
 exports.createProduct = async (req, res) => {
