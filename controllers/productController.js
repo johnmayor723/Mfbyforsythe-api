@@ -68,7 +68,7 @@ exports.publishPreviewProducts = async (req, res) => {
 // GET one draft product preview
 exports.getOneProductPreview = async (req, res) => {
   try {
-    const product = await PreviewProduct.findOne({ _id: req.params.id, status: 'draft' });
+    const product = await PreviewProduct.findOne({ _id: req.params.id});
     if (!product) return res.status(404).json({ message: 'Product draft not found' });
     res.json(product);
   } catch (err) {
