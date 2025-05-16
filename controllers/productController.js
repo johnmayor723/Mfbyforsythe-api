@@ -79,7 +79,7 @@ exports.getOneProductPreview = async (req, res) => {
 // DELETE a product draft
 exports.deleteProductPreview = async (req, res) => {
   try {
-    const product = await PreviewProduct.findOneAndDelete({ _id: req.params.id, status: 'draft' });
+    const product = await PreviewProduct.findOneAndDelete({ _id: req.params.id });
     if (!product) return res.status(404).json({ message: 'Product draft not found' });
     res.json({ message: 'Product draft deleted successfully' });
   } catch (err) {
