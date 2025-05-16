@@ -1,4 +1,4 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const previewProductSchema = new mongoose.Schema({
   name: {
