@@ -4,7 +4,7 @@ const PreviewProduct = require('../models/PreviewProduct');
 // Create a preview product (staged version)
 exports.createPreviewProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors, category} = req.body;
+    const { name, description, price, size, images, colors, category, subcategory} = req.body;
 
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
     const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
