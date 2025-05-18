@@ -4,7 +4,7 @@ const PreviewProduct = require('../models/PreviewProduct');
 // Create a preview product (staged version)
 exports.createPreviewProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors } = req.body;
+    const { name, description, price, size, images, colors, category} = req.body;
 
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
     const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
@@ -15,7 +15,8 @@ exports.createPreviewProduct = async (req, res) => {
       price,
       size,
       images: parsedImages,
-      colors: parsedColors
+      colors: parsedColors,
+      category
     });
 
     const savedPreview = await newPreview.save();
@@ -51,7 +52,8 @@ exports.publishPreviewProducts = async (req, res) => {
       price: preview.price,
       size: preview.size,
       colors: preview.colors,
-      images: preview.images
+      images: preview.images,
+      category: preview.category
     }));
 
     await Product.insertMany(productsToSave);
@@ -90,7 +92,7 @@ exports.deleteProductPreview = async (req, res) => {
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors } = req.body;
+    const { name, description, price, size, images, colors, category } = req.body;
 
     // Parse images and colors if they are JSON strings
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
@@ -101,6 +103,7 @@ exports.createProduct = async (req, res) => {
       description,
       price,
       size,
+      category,
       images: parsedImages, // Array of image URLs
       colors: parsedColors  // Array of color options
     });
@@ -138,7 +141,7 @@ exports.getProductById = async (req, res) => {
 // Update product
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors } = req.body;
+    const { name, description, price, size, images, colors, category } = req.body;
 
     // Parse images and colors if they are JSON strings
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
@@ -151,6 +154,7 @@ exports.updateProduct = async (req, res) => {
         description,
         price,
         size,
+        category,
         images: parsedImages,
         colors: parsedColors
       },

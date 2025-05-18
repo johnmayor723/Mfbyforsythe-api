@@ -21,11 +21,16 @@ const previewProductSchema = new mongoose.Schema({
     type: [String],
     required: true
   },
-  images: {
+ images: {
     type: [String],
+    required: true
+  },
+  category: {
+    type: String,
     required: true
   }
 }, { timestamps: true });
+
 
 const PreviewProduct = mongoose.model('PreviewProduct', previewProductSchema);
 

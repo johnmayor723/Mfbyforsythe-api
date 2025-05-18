@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   size: {
-    type: [String], // Changed from Number to String (since fashion sizes vary)
+    type: [String],
     required: true
   },
   price: {
@@ -18,11 +18,15 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   colors: {
-    type: [String], // Array of color options
+    type: [String],
     required: true
   },
   images: {
-    type: [String], // Array of image URLs
+    type: [String],
+    required: true
+  },
+  category: {
+    type: String,
     required: true
   }
 }, { timestamps: true });
