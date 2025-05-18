@@ -16,7 +16,8 @@ exports.createPreviewProduct = async (req, res) => {
       size,
       images: parsedImages,
       colors: parsedColors,
-      category
+      category,
+      subcategory
     });
 
     const savedPreview = await newPreview.save();
@@ -53,7 +54,8 @@ exports.publishPreviewProducts = async (req, res) => {
       size: preview.size,
       colors: preview.colors,
       images: preview.images,
-      category: preview.category
+      category: preview.category,
+      subcategory: preview.subcategory
     }));
 
     await Product.insertMany(productsToSave);
@@ -104,6 +106,7 @@ exports.createProduct = async (req, res) => {
       price,
       size,
       category,
+      subcategory,
       images: parsedImages, // Array of image URLs
       colors: parsedColors  // Array of color options
     });
@@ -155,6 +158,7 @@ exports.updateProduct = async (req, res) => {
         price,
         size,
         category,
+        subcategory,
         images: parsedImages,
         colors: parsedColors
       },
