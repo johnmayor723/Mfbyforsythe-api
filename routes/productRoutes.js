@@ -9,6 +9,7 @@ const {
   getPreviewProducts,
   publishPreviewProducts,
   getOneProductPreview,
+  updateOneProductPreview,
   deleteProductPreview
 } = require('../controllers/productController');
 
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post('/preview', createPreviewProduct);
 router.get('/preview', getPreviewProducts);
 router.get('/preview/:id', getOneProductPreview);
+router.put('/preview/:id', updateOneProductPreview);
 router.delete('/preview/:id', deleteProductPreview);
 router.post('/publish', publishPreviewProducts);
 

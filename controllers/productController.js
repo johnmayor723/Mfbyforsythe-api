@@ -80,6 +80,39 @@ exports.getOneProductPreview = async (req, res) => {
   }
 };
 
+// Update a preview product (staged version)
+exports.updateOneProductPreview = async (req, res) => {
+  try {
+    const { name, description, price, size, images, colors, category, subcategory } = req.body;
+
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+
+    const updatedProduct = await PreviewProduct.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        description,
+        price,
+        size,
+        images: parsedImages,
+        colors: parsedColors,
+        category,
+        subcategory
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Preview product not found' });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 // DELETE a product draft
 exports.deleteProductPreview = async (req, res) => {
   try {
