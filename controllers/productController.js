@@ -13,11 +13,31 @@ exports.createPreviewProduct = async (req, res) => {
       subcategory
     } = req.body;
 
-    // Parse only if they're strings (common when sent as form-data)
-    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
-    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+    // Parse images
+    let parsedImages = [];
+    if (Array.isArray(images)) {
+      parsedImages = images;
+    } else if (typeof images === 'string') {
+      try {
+        parsedImages = JSON.parse(images);
+      } catch {
+        parsedImages = [images];
+      }
+    }
 
-    if (!parsedImages || !Array.isArray(parsedImages) || parsedImages.length === 0) {
+    // Parse colors
+    let parsedColors = [];
+    if (Array.isArray(colors)) {
+      parsedColors = colors;
+    } else if (typeof colors === 'string') {
+      try {
+        parsedColors = JSON.parse(colors);
+      } catch {
+        parsedColors = [colors];
+      }
+    }
+
+    if (!parsedImages.length) {
       return res.status(400).json({ message: 'At least one image is required to create a preview product.' });
     }
 
@@ -27,7 +47,7 @@ exports.createPreviewProduct = async (req, res) => {
       ...(price && { price }),
       ...(size && { size }),
       images: parsedImages,
-      ...(parsedColors && { colors: parsedColors }),
+      ...(parsedColors.length && { colors: parsedColors }),
       ...(category && { category }),
       ...(subcategory && { subcategory })
     });
