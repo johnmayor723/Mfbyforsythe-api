@@ -1,23 +1,35 @@
 const Product = require('../models/Product');
 const PreviewProduct = require('../models/PreviewProduct');
 
-// Create a preview product (staged version)
 exports.createPreviewProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors, category, subcategory} = req.body;
-
-    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
-    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
-
-    const newPreview = new PreviewProduct({
+    let { images, colors } = req.body;
+    const {
       name,
       description,
       price,
       size,
-      images: parsedImages,
-      colors: parsedColors,
       category,
       subcategory
+    } = req.body;
+
+    // Parse only if they're strings (common when sent as form-data)
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+
+    if (!parsedImages || !Array.isArray(parsedImages) || parsedImages.length === 0) {
+      return res.status(400).json({ message: 'At least one image is required to create a preview product.' });
+    }
+
+    const newPreview = new PreviewProduct({
+      ...(name && { name }),
+      ...(description && { description }),
+      ...(price && { price }),
+      ...(size && { size }),
+      images: parsedImages,
+      ...(parsedColors && { colors: parsedColors }),
+      ...(category && { category }),
+      ...(subcategory && { subcategory })
     });
 
     const savedPreview = await newPreview.save();
@@ -26,7 +38,6 @@ exports.createPreviewProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
 // Get all preview (staged) products
 exports.getPreviewProducts = async (req, res) => {
   try {

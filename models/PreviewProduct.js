@@ -3,23 +3,23 @@ const mongoose = require('mongoose');
 const previewProductSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    
   },
   description: {
     type: String,
-    required: true
+    
   },
   size: {
     type: [String],
-    required: true
+    
   },
   price: {
-    type: Number,
-    required: true
+    type: Number
+    
   },
   colors: {
-    type: [String],
-    required: true
+    type: [String]
+    
   },
  images: {
     type: [String],
@@ -30,8 +30,8 @@ const previewProductSchema = new mongoose.Schema({
     required: true
   },
   subcategory: {
-    type: String,
-    required: true
+    type: String
+    
   }
 }, { timestamps: true });
 
