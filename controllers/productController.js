@@ -3,55 +3,21 @@ const PreviewProduct = require('../models/PreviewProduct');
 
 exports.createPreviewProduct = async (req, res) => {
   try {
-    let { images, colors } = req.body;
-    const {
-      name,
-      description,
-      price,
-      size,
-      category,
-      subcategory
-    } = req.body;
+    const { name, description, price, size, images, colors, category, subcategory} = req.body;
 
-    // Parse images
-    let parsedImages = [];
-    if (Array.isArray(images)) {
-      parsedImages = images;
-    } else if (typeof images === 'string') {
-      try {
-        parsedImages = JSON.parse(images);
-      } catch {
-        parsedImages = [images];
-      }
-    }
-
-    // Parse colors
-    let parsedColors = [];
-    if (Array.isArray(colors)) {
-      parsedColors = colors;
-    } else if (typeof colors === 'string') {
-      try {
-        parsedColors = JSON.parse(colors);
-      } catch {
-        parsedColors = [colors];
-      }
-    }
-
-    if (!parsedImages.length) {
-      return res.status(400).json({ message: 'At least one image is required to create a preview product.' });
-    }
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
 
     const newPreview = new PreviewProduct({
-      ...(name && { name }),
-      ...(description && { description }),
-      ...(price && { price }),
-      ...(size && { size }),
-      images: parsedImages,
-      ...(parsedColors.length && { colors: parsedColors }),
-      ...(category && { category }),
-      ...(subcategory && { subcategory })
-    });
-
+  name: name || "",
+  description: description || "",
+  price: price || "",
+  size: size || [],
+  images: parsedImages, // Required and already validated
+  colors: parsedColors || [],
+  category: category || "",
+  subcategory: subcategory || ""
+});
     const savedPreview = await newPreview.save();
     res.status(201).json(savedPreview);
   } catch (error) {
