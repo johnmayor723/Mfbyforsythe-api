@@ -9,6 +9,32 @@ exports.createPreviewProduct = async (req, res) => {
     const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
 
     const newPreview = new PreviewProduct({
+      name,
+      description,
+      price,
+      size,
+      images: parsedImages,
+      colors: parsedColors,
+      category,
+      subcategory
+    });
+
+    const savedPreview = await newPreview.save();
+    res.status(201).json(savedPreview);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+/*
+
+exports.createPreviewProduct = async (req, res) => {
+  try {
+    const { name, description, price, size, images, colors, category, subcategory} = req.body;
+
+    const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
+    const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+
+    const newPreview = new PreviewProduct({
   name: name || "",
   description: description || "",
   price: price || "",
@@ -34,7 +60,7 @@ exports.getPreviewProducts = async (req, res) => {
   }
 };
 
-
+*/
 // Publish all preview products to live product model
 exports.publishPreviewProducts = async (req, res) => {
   try {

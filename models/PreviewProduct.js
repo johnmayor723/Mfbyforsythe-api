@@ -3,38 +3,35 @@ const mongoose = require('mongoose');
 const previewProductSchema = new mongoose.Schema({
   name: {
     type: String,
-    
+    trim: true,
   },
   description: {
     type: String,
-    
+    trim: true,
   },
   size: {
     type: [String],
-    
+    default: [],
   },
   price: {
-    type: Number
-    
+    type: Number,
   },
   colors: {
-    type: [String]
-    
-  },
- images: {
     type: [String],
-    required: true
+    default: [],
+  },
+  images: {
+    type: [String],
   },
   category: {
     type: String,
-    required: true
+    trim: true,
   },
   subcategory: {
-    type: String
-    
+    type: String,
+    trim: true,
   }
 }, { timestamps: true });
-
 
 const PreviewProduct = mongoose.model('PreviewProduct', previewProductSchema);
 
