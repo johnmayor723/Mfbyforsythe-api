@@ -50,6 +50,8 @@ exports.createPreviewProduct = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+*/
 // Get all preview (staged) products
 exports.getPreviewProducts = async (req, res) => {
   try {
@@ -60,7 +62,7 @@ exports.getPreviewProducts = async (req, res) => {
   }
 };
 
-*/
+
 // Publish all preview products to live product model
 exports.publishPreviewProducts = async (req, res) => {
   try {
