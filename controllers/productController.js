@@ -3,10 +3,21 @@ const PreviewProduct = require('../models/PreviewProduct');
 
 exports.createPreviewProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors, category, subcategory} = req.body;
+    const {
+      name,
+      description,
+      price,
+      size,
+      images,
+      colors,
+      category,
+      subcategory,
+      buyingOptions
+    } = req.body;
 
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
     const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
+    const parsedBuyingOptions = typeof buyingOptions === 'string' ? JSON.parse(buyingOptions) : buyingOptions;
 
     const newPreview = new PreviewProduct({
       name,
@@ -16,7 +27,8 @@ exports.createPreviewProduct = async (req, res) => {
       images: parsedImages,
       colors: parsedColors,
       category,
-      subcategory
+      subcategory,
+      buyingOptions: parsedBuyingOptions
     });
 
     const savedPreview = await newPreview.save();
@@ -80,7 +92,8 @@ exports.publishPreviewProducts = async (req, res) => {
       colors: preview.colors,
       images: preview.images,
       category: preview.category,
-      subcategory: preview.subcategory
+      subcategory: preview.subcategory,
+      buyingOptions: preview.buyingOptions || []
     }));
 
     await Product.insertMany(productsToSave);
@@ -91,7 +104,6 @@ exports.publishPreviewProducts = async (req, res) => {
     res.status(500).json({ message: 'Publishing failed', error: error.message });
   }
 };
-
 
 
 // GET one draft product preview
