@@ -9,7 +9,7 @@ const buyingOptionSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  size: {
+  sizes: {
     type: [String],
     default: [],
   },

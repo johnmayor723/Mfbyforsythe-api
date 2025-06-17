@@ -11,7 +11,7 @@ const buyingOptionSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  size: {
+  sizes: {
     type: [String],
     required: true
   },
