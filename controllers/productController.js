@@ -120,7 +120,7 @@ exports.getOneProductPreview = async (req, res) => {
 // Update a preview product (staged version)
 exports.updateOneProductPreview = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors, category, subcategory } = req.body;
+    const { name, description, price, size, images, colors, category, subcategory ,buyingOptions} = req.body;
 
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
     const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors;
@@ -135,7 +135,8 @@ exports.updateOneProductPreview = async (req, res) => {
         images: parsedImages,
         colors: parsedColors,
         category,
-        subcategory
+        subcategory,
+        buyingOptions
       },
       { new: true }
     );
