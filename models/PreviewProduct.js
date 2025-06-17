@@ -20,7 +20,7 @@ const buyingOptionSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  images: {
+  image: {
     type: [String],
   },
   category: {
