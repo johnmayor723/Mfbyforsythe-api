@@ -8,20 +8,20 @@ const buyingOptionSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    
     trim: true
   },
   sizes: {
     type: [String],
-    required: true
+    
   },
   price: {
     type: Number,
-    required: true
+    
   },
   colors: {
     type: [String],
-    required: true
+    
   },
   image: {
     type: [String],
@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
   },
   size: {
     type: [String],
-    required: true
+    
   },
   price: {
     type: Number,
@@ -51,7 +51,7 @@ const productSchema = new mongoose.Schema({
   },
   colors: {
     type: [String],
-    required: true
+    
   },
   images: {
     type: [String],
