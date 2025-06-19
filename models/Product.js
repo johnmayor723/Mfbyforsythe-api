@@ -26,6 +26,7 @@ const buyingOptionSchema = new mongoose.Schema({
   image: {
     type: [String],
     required: true
+    
   }
 }, { _id: false });
 
