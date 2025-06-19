@@ -165,7 +165,7 @@ exports.deleteProductPreview = async (req, res) => {
 // Create a new product
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, size, images, colors, category } = req.body;
+    const { name, description, price, size, images, colors, category, subcategory, buyingOptions } = req.body;
 
     // Parse images and colors if they are JSON strings
     const parsedImages = typeof images === 'string' ? JSON.parse(images) : images;
@@ -178,6 +178,7 @@ exports.createProduct = async (req, res) => {
       size,
       category,
       subcategory,
+      buyingOptions
       images: parsedImages, // Array of image URLs
       colors: parsedColors  // Array of color options
     });
