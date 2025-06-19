@@ -178,7 +178,7 @@ exports.createProduct = async (req, res) => {
       size,
       category,
       subcategory,
-      buyingOptions
+      buyingOptions,
       images: parsedImages, // Array of image URLs
       colors: parsedColors  // Array of color options
     });
